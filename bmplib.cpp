@@ -35,7 +35,7 @@ typedef struct {
   uint32   biClrUsed;       // see below
   uint32   biClrImportant;  // see below
 } BITMAPFILEHEADER, *PBITMAPFILEHEADER;
-
+//comment
 typedef struct {
   uint8 rgbBlue;
   uint8 rgbGreen;
