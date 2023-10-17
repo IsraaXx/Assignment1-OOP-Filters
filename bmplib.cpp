@@ -12,7 +12,7 @@ using std::endl;
 typedef unsigned char uint8;
 typedef unsigned short int uint16;
 typedef unsigned int uint32;
-
+//
 //#define BMP_BIG_ENDIAN
 #define BYTE_SWAP(num) (((num>>24)&0xff) | ((num<<8)&&0xff0000) | ((num>>8)&0xff00) | ((num<<24)&0xff000000))
 
