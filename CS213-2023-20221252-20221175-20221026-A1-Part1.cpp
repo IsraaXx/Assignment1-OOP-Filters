@@ -610,7 +610,7 @@ for(int i=0;i<SIZE;i++){
      }
 }
 
-void Skew_Image_Right() () { // Author: Nada Mohamed Soliman
+void Skew_Image_Right()  { // Author: Nada Mohamed Soliman
     double skew_angle_degree;
     cout<<"Enter skew angle degree: ";
     cin>>skew_angle_degree;
