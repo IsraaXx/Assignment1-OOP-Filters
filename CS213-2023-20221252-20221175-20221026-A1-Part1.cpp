@@ -27,7 +27,8 @@ void Crop_Image(int x ,int y , int l , int w);
 void Mirror_Filter(char x);
 void Enlarge_Image();
 void Shufffel_Image();
-void Skew_Image();
+void Skew_Image_Right();
+void Skew_Image_Up(double angle_degree);
 bool displayMenu();
 void loadImage() {  // to read the image name
     char imageFileName[100];
@@ -71,62 +72,74 @@ bool displayMenu() {
     {
         BlackWhite();
         return true;
-    } else if (choice == 2)
+    } 
+    else if (choice == 2)
     {
         InvertImage();
         return true;
-    } else if (choice == 3)
+    } 
+    else if (choice == 3)
     {
         MergeImage();
         return true;
-    } else if (choice == 4)
+    } 
+    else if (choice == 4)
     {
         cout << "Flip horizontally or vertically ? Enter letter h or v:";
         cin >> flip;
         FlipImage(flip);
         return true;
-    } else if (choice == 5)
+    } 
+    else if (choice == 5)
     {
         RotateImage();
         return true;
-    } else if (choice == 6)
+    } 
+    else if (choice == 6)
     {
         cout << "Do you want to darken or lighten ? Enter letter d or l:";
         cin >> Dark_light;
         Darken_Lighten(Dark_light);
         return true;
-    }
-    else if (choice==7){
+    } 
+    else if (choice==7)
+    {
          DetectEdges();
         return true;
     }
-    else if (choice==8){
+    else if (choice==8)
+    {
         Enlarge_Image();
         return true;
     }
-    else if(choice==9){
+    else if(choice==9)
+    {
         string x;
         cout<<"Shrink to (1/2), (1/3) or (1/4) :";
         cin>>x;
         Shrink_Image(x);
         return true;
     }
-    else if(choice==10){
+    else if(choice==10)
+    {
        cout<<"Mirror (l)eft, (r)ight, (u)pper, (d)own side? Enter the letter:\n";
        char m;
        cin>>m;
        Mirror_Filter(m);
         return true;
     }
-    else if(choice==11){
+    else if(choice==11)
+    {
         Shufffel_Image();
         return true;
     }
-    else if(choice==12){
+    else if(choice==12)
+    {
         Blur_Image();
         return true;
     }
-    else if(choice==13){
+    else if(choice==13)
+    {
         cout<<"Please Enter x y position:\n";
         int x ,y ,l ,w;
         cin>>x>>y;
@@ -135,13 +148,19 @@ bool displayMenu() {
         Crop_Image(x,y,l,w);
         return true;
     }
-    else if(choice==14){
-        //Skew_Image();
+    else if(choice==14)
+    {
+        //cout<<"Please enter degree to skew Right(Horizontally):";
+        //Skew_Image_Right();
         //return true;
     }
-    else if(choice==15){
-        //
-        //
+    else if(choice==15)
+    {
+        cout<<"Please enter degree to skew Up(Vertically):";
+        double angle_degree;
+        cin>>angle_degree;
+       Skew_Image_Up(angle_degree);
+       return true;
     }
     else if (choice == 16)
     {
@@ -153,7 +172,7 @@ bool displayMenu() {
             return false;}
         loadImage();
         return true;
-    }
+    } 
 
     else if (choice == 0)
     {
@@ -185,7 +204,6 @@ void InvertImage() { // Author: Nada Mohammed Soliman
         }
     }
 }
-
 void FlipImage(char x) { // Author: Israa Mohamed Elsayed
     if (x == 'v' || x == 'V') { // flip vertically
         for (int i = 0; i < SIZE / 2; i++) {//loop to the half of the image vertically half of the rows
@@ -206,7 +224,6 @@ void FlipImage(char x) { // Author: Israa Mohamed Elsayed
         }
     }
 }
-
 void RotateImage() { // Author: Nada Mohamed Soliman
     int rotation_angle, times_to_rotate_90;
     auto n = SIZE;
@@ -224,12 +241,10 @@ void RotateImage() { // Author: Nada Mohamed Soliman
             for (int j = 0; j < SIZE; j++) {
                 //*image[i][j]=arr[j][n-1-i];*/ // to rotate the image 90 daraga left
                 image[i][j] = arr[n - 1 - j][i];   //to rotate the image 90 daraga right
-
             }
         }
     }
 }
-
 void Darken_Lighten(char y) { // Author: Amany Mohamed Hussein
     if (y == 'd' || y == 'D') { //Darken image
         for (int i = 0; i < SIZE; i++) {
@@ -247,7 +262,6 @@ void Darken_Lighten(char y) { // Author: Amany Mohamed Hussein
         }
     }
 }
-
 void MergeImage() { // Author: Amany Mohamed Hussein
     loadImage1();
     for (int i = 0; i < SIZE; i++) {
@@ -259,6 +273,7 @@ void MergeImage() { // Author: Amany Mohamed Hussein
 
     }
 }
+
 void DetectEdges() { // Author: Israa Mohamed Elsayed
     int sum =0 ;
     for (int i = 0; i < SIZE; ++i){
@@ -365,9 +380,8 @@ void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
                     image[i][j]=255;
                     image[i][j]=image1[i][j];
                 }
-
             }
-    }
+        }
 }
 void Crop_Image(int x,int y,int l,int w){ // Author: Israa Mohamed Elsayed
     for (int i = 0; i < SIZE; ++i) { // i want to start crop from x , y position and cut a square of length l , width w
@@ -550,4 +564,47 @@ quarter to the first quarter */
             }
         }
     }
+}
+void Skew_Image_Up(double angle_degree) {    // Author: Amany Mohamed Hussein
+angle_degree = 90 - angle_degree;  //Substract the angle from 90 to get the inner angle
+double angle_radian = (angle_degree* 22) /( 180 * 7 );  //convert the angle to radian to get tan(angle)
+double x=256/(1+tan(angle_radian));  //move is to get the percentage that image will skew from my base = 256
+double step=SIZE-x;
+double move=step/SIZE;
+unsigned char temp[SIZE][SIZE] ;
+unsigned char image2[SIZE][SIZE];
+for(int i=0;i<SIZE;i++){
+         for(int j=0;j<SIZE;j++){
+            //Here I will copy each pixel in the original image to temp
+            temp[i][j]=image[i][j];
+         }
+     }
+     for(int i=0;i<SIZE;i++){
+         for(int j=0;j<SIZE;j++){
+           image[i][j]=255;  //to make the original image white and the image2 white to make the ground of my image white as user want
+           image2[i][j]=255;
+         }
+    }
+    for(int i=0;i<SIZE;i++) {
+         for(int j=0;j<SIZE;j++){
+        //Here I will shrink the original image firstly and use the temp that has original pixels
+            image[(j*((int)x)/SIZE)][i]=temp[j][i];//I swaped between i,j to be able to skew image right (vertical)
+                                                   //because it here consider j as rows and i as columns 
+         }
+     }
+     for(int i=0;i<SIZE;i++){
+         for(int j=0;j<SIZE;j++){
+             //copy pixel from shrink image to the image2 starting from j+step which step is the base of shrinked image and reduce it according to move
+            image2[j+(int)step][i]=image[j][i];
+         }
+         step-=move;
+     }
+     for(int i=0;i<SIZE;i++)
+     {
+         for(int j=0;j<SIZE;j++)
+         {
+            // copy each pixel in the skewed image2 in image to save it .
+             image[i][j]=image2[i][j];
+         }
+     }
 }
