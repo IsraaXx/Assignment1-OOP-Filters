@@ -150,9 +150,9 @@ bool displayMenu() {
     }
     else if(choice==14)
     {
-        //cout<<"Please enter degree to skew Right(Horizontally):";
-        //Skew_Image_Right();
-        //return true;
+        cout<<"Please enter degree to skew Right(Horizontally):";
+        Skew_Image_Right();
+        return true;
     }
     else if(choice==15)
     {
