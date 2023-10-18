@@ -565,6 +565,7 @@ quarter to the first quarter */
         }
     }
 }
+
 void Skew_Image_Up(double angle_degree) {    // Author: Amany Mohamed Hussein
 angle_degree = 90 - angle_degree;  //Substract the angle from 90 to get the inner angle
 double angle_radian = (angle_degree* 22) /( 180 * 7 );  //convert the angle to radian to get tan(angle)
@@ -608,3 +609,62 @@ for(int i=0;i<SIZE;i++){
          }
      }
 }
+
+void Skew_Image_Right() () { // Author: Nada Mohamed Soliman
+    double skew_angle_degree;
+    cout<<"Enter skew angle degree: ";
+    cin>>skew_angle_degree;
+    /*Substract the angle from 90 to get the inner angle*/
+    skew_angle_degree=90-skew_angle_degree;
+    /*This law to convert the angle to radian as I will get tan(angle)*/
+    double skew_angle_radian=skew_angle_degree*3.14159265359 /180.0;
+    double x=256/(1+(1/tan(skew_angle_radian)));
+    /*move is to get the percentage that image will skew from my base and the base =SIZE=256*/
+    double step=SIZE-x;
+    double move=step/SIZE;
+    int temp [SIZE][SIZE] ;
+    int img2[SIZE][SIZE];
+    for(int i=0;i<SIZE;i++)
+    {
+        for(int j=0;j<SIZE;j++)
+        {
+            /*Here I will copy each pixel in the original image to temp*/
+            temp[i][j]=image[i][j];
+        }
+    }
+    for(int i=0;i<SIZE;i++)
+    {
+        for(int j=0;j<SIZE;j++)
+        {
+            /*Here I will make the original image white and the img2 white to make the ground of my image white as user want*/
+            image[i][j]=255;
+            img2[i][j]=255;
+        }
+    }
+    for(int i=0;i<SIZE;i++)
+    {
+        for(int j=0;j<SIZE;j++)
+        {
+            /*Here I will shrink the original image firstly and use the temp that has original pixels*/
+            image[i][(j*((int)x)/SIZE)]=temp[i][j];
+        }
+    }
+    for(int i=0;i<SIZE;i++)
+    {
+        for(int j=0;j<SIZE;j++)
+        {
+            /*copy pixel from shrink image to the img2 starting from j+step which step is the base of shrinked image and reduce it recording to my move */
+            img2[i][j+(int)step]=image[i][j];
+        }
+        step-=move;
+    }
+    for(int i=0;i<SIZE;i++)
+    {
+        for(int j=0;j<SIZE;j++)
+        {
+            /* copy each pixel in the img2 to in image as it is what will appear to the user*/
+            image[i][j]=img2[i][j];
+        }
+    }
+}
+ 
