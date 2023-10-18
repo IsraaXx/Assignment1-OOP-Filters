@@ -20,6 +20,14 @@ void MergeImage();
 void FlipImage(char x);
 void RotateImage();
 void Darken_Lighten(char y);
+void DetectEdges();
+void Blur_Image();
+void Shrink_Image(string x);
+void Crop_Image(int x ,int y , int l , int w);
+void Mirror_Filter(char x);
+void Enlarge_Image();
+void Shufffel_Image();
+void Skew_Image();
 bool displayMenu();
 void loadImage() {  // to read the image name
     char imageFileName[100];
@@ -54,7 +62,9 @@ int main() {
 bool displayMenu() {
     char flip, Dark_light;
     cout << "Please select the number of filter to apply or 0 to exit: \n";
-    cout<< "1-Black & White Filter\n2-Invert Filter\n3-Merge Filter\n4-Flip Image\n5-Rotate Image\n6-Darken and Lighten Image\n7-Save the image to a file\n0-Exit\n";
+    cout<< "1-Black & White Filter\n2-Invert Filter\n3-Merge Filter\n4-Flip Image\n5-Rotate Image\n6-Darken and Lighten Image\n7-Detect Image Edges\n"
+           "8-Enlarge Image\n9-Shrink Image\n10-Mirror 1/2 Image\n11-Shuffle Image\n12-Blur Image\n"
+           "13-Crop Image\n14-Skew Image Right\n15-Skew Image Up\n16-Save the image to a file\n0-Exit\n";
     cout << "Your Selection :";
     cin >> choice;
     if (choice == 1)
@@ -85,7 +95,55 @@ bool displayMenu() {
         cin >> Dark_light;
         Darken_Lighten(Dark_light);
         return true;
-    } else if (choice == 7)
+    }
+    else if (choice==7){
+         DetectEdges();
+        return true;
+    }
+    else if (choice==8){
+        Enlarge_Image();
+        return true;
+    }
+    else if(choice==9){
+        string x;
+        cout<<"Shrink to (1/2), (1/3) or (1/4) :";
+        cin>>x;
+        Shrink_Image(x);
+        return true;
+    }
+    else if(choice==10){
+       cout<<"Mirror (l)eft, (r)ight, (u)pper, (d)own side? Enter the letter:\n";
+       char m;
+       cin>>m;
+       Mirror_Filter(m);
+        return true;
+    }
+    else if(choice==11){
+        Shufffel_Image();
+        return true;
+    }
+    else if(choice==12){
+        Blur_Image();
+        return true;
+    }
+    else if(choice==13){
+        cout<<"Please Enter x y position:\n";
+        int x ,y ,l ,w;
+        cin>>x>>y;
+        cout<<"Please Enter length and width of the image to keep:\n";
+        cin>>l>>w;
+        Crop_Image(x,y,l,w);
+        return true;
+    }
+    else if(choice==14){
+        //Skew_Image();
+        //return true;
+    }
+    else if(choice==15){
+        //
+        //
+    }
+    else if (choice == 16)
     {
         saveImage();
         cout << "Do you want to choose another image? Enter y for yes, n for no:";
@@ -95,7 +153,9 @@ bool displayMenu() {
             return false;}
         loadImage();
         return true;
-    } else if (choice == 0)
+    }
+
+    else if (choice == 0)
     {
         return false;
     }
@@ -197,5 +257,297 @@ void MergeImage() { // Author: Amany Mohamed Hussein
             //the average=(the num of pixel of image 1 + the num of pixel of image 2 ) / 2.
         }
 
+    }
+}
+void DetectEdges() { // Author: Israa Mohamed Elsayed
+    int sum =0 ;
+    for (int i = 0; i < SIZE; ++i){
+        for (int j = 0; j < SIZE; ++j) {
+            sum+=image[i][j];
+        }
+    } // We get the average of the pixels, so we can check if the current pixel is greater than the next one in next row or
+    // the opposite so this will be an edge = 0(black) and if the current pixel is greater than the next in next column or the opposite then
+    // it also an edge , comparing the current with the nearby pixels with the average
+    int ave = sum/(SIZE*SIZE);
+    for (int i = 0; i < SIZE-1 ; ++i) {
+        for (int j = 0; j < SIZE-1; ++j) {
+            if(image[i][j]>ave && image[i+1][j]<=ave || image[i][j]<=ave&& image[i+1][j]>ave)
+                image[i][j]=0;
+            else if(image[i][j]>ave && image[i][j+1]<=ave || image[i][j]<=ave&& image[i][j+1]>ave)
+                image[i][j]=0;
+            else if(image[i][j]>ave && image[i+1][j+1]<=ave || image[i][j]<=ave&& image[i+1][j+1]>ave)
+                image[i][j]=0;
+            else
+                image[i][j]=255;
+        }
+
+    }
+}
+void Blur_Image(){ // Author: Amany Mohamed Hussein
+    for(int time = 0 ;time < 10 ;time++){ //Apply filter blur multible times to increase the effect of blur image.
+        for (int i = 1 ; i < SIZE-1; i++)
+            for (int j = 1; j < SIZE-1; j++)
+            {
+                image1[i][j]=(image[i][j+1] + image[i][j-1]+ image[i-1][j] + image[i+1][j]
+                              + image[i-1][j+1]+ image[i-1][j-1]+ image[i+1][j-1]+ image[i+1][j+1] )/8 ;
+                //to blur image I need to get the average of each pixel around the original pixel and put average on the original pixel.
+            }
+        if(time != 9)
+            for (int i = 0 ; i < SIZE; i++)
+                for (int j= 0 ; j < SIZE; j++)
+                    image[i][j]=image1[i][j]; // copy the blur image1 in image to save it .
+
+    }
+}
+void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
+    if(x=="1/2")  //Shrink image to half.
+    {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image1[i][j] = 255;  // I need a white image to be a background to the shrinked image
+            }
+        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if ((i * 2) <= 255 && (j * 2) <= 255) {
+                    // it loops through the image array and checks if the indices i * 2 and j * 2 are within the bounds of the original image array.
+                    image1[i][j] = image[i * 2][j * 2];// this reduces the size of the image by a factor of 2 in both dimensions.
+
+                }
+            }
+        }
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                image[i][j]=255;
+                image[i][j]=image1[i][j];
+            }
+
+        }
+    }
+    else if(x=="1/3") //Shrink image to third.
+        {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image1[i][j] = 255;  // I need a white image to be a background to the shrinked image
+            }
+        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if ((i * 3) <= 255 && (j * 3) <= 255) {
+                    image1[i][j] = image[i * 3][j * 3]; // this reduces the size of the image by a factor of 3 in both dimensions.
+                }
+            }
+        }
+            for (int i = 0; i < SIZE; ++i) {
+                for (int j = 0; j < SIZE; ++j) {
+                    image[i][j]=255;
+                    image[i][j]=image1[i][j];
+                }
+
+            }
+    }
+    else if(x=="1/4") //Shrink image to quarter.
+        {
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j< SIZE; j++) {
+                image1[i][j] = 255;  // I need a white image to be a background to the shrinked image
+            }
+        }
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if ((i * 4) <= 255 && (j * 4) <= 255) {
+                    image1[i][j] = image[i * 4][j * 4]; // this reduces the size of the image by a factor of 4 in both dimensions.
+                }
+            }
+        }
+            for (int i = 0; i < SIZE; ++i) {
+                for (int j = 0; j < SIZE; ++j) {
+                    image[i][j]=255;
+                    image[i][j]=image1[i][j];
+                }
+
+            }
+    }
+}
+void Crop_Image(int x,int y,int l,int w){ // Author: Israa Mohamed Elsayed
+    for (int i = 0; i < SIZE; ++i) { // i want to start crop from x , y position and cut a square of length l , width w
+        for (int j = 0; j < SIZE; ++j) { // to keep and removing the rest so anything out of this range will be removed
+           if(i<y||i>y+l || j<x ||j>x+w) // removed = set to white
+               image[i][j]=255;
+        }
+
+    }
+
+}
+void Mirror_Filter(char x){ // Author: Israa Mohamed Elsayed
+    if(x=='l'||x=='L'){ // want to mirror the left half of the image , so we start from j = size/2
+        for (int i = 0; i < SIZE; ++i) { // mirror from the half of columns and put the left side on the right side
+            for (int j = (SIZE/2); j < SIZE; ++j) {
+                image[i][j]=image[i][SIZE-1-j];
+            }
+        }
+    }
+    else if (x=='r'||x=='R'){ // mirror the right half , this mean we start from 0 as usual and every pixel of the left
+        for (int i = 0; i < SIZE; ++i) { // side we put instead of it the pixels of the right side
+            for (int j = 0; j < SIZE; ++j) {
+                image[i][j]=image[i][SIZE-1-j];
+            }
+        }
+    }
+    else if(x=='u'||x=='U'){ // mirror the upper side so , it's half of the rows , so we start from i = size/2
+        for (int i = (SIZE/2); i < SIZE; ++i) {//and we replace the down pixels with thw upper ones
+            for (int j = 0; j < SIZE; ++j) {
+                image[i][j]=image[SIZE-1-i][j];
+            }
+        }
+    }
+    else if(x =='d'|| x=='D'){// mirror the down side so , we want to replace the upper pixels with the pixels of the
+        for (int i = 0 ; i < SIZE; ++i) { // down side and SIZE-1-i means the corresponding rows on the opposite side
+            for (int j = 0; j < SIZE; ++j) {
+                image[i][j]=image[SIZE-1-i][j];
+            }
+        }
+
+    }
+}
+void Enlarge_Image() { //Author: Nada Mohamed Soliman
+    auto n=SIZE;
+    int arr1[n/2][n/2],arr2[n/2][n/2],arr3[n/2][n/2],arr4[n/2][n/2],number_of_quarter;
+    cout<<"Enter the number of quarter of the image: ";
+    cin>>number_of_quarter;
+    /*Here I will divide the image into four quarters
+    and copy the pixel values from the image*/
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            arr1[i][j]=image[i][j];
+            arr2[i][j]=image[i][j+(n/2)];
+            arr3[i][j]=image[i+(n/2)][j];
+            arr4[i][j]=image[i+(n/2)][j+(n/2)]; /*n/2=quarter_width=quarter_height*/
+        }
+    }
+    /*choose the quarter the user want and enlarge it in the original image*/
+    if(number_of_quarter==1)
+    {
+        for (int i = 0; i <n; i++) {
+            for (int j =0; j<n; j++) {
+                /*to each pixel I will load four of it in the original image
+                 to enlarge any of four quarters */
+                image[i][j]=arr1[i/2][j/2];
+            }
+        }
+    }
+    else if(number_of_quarter==2)
+    {
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                image[i][j]=arr2[i/2][j/2];
+            }
+        }
+
+    }
+    else if(number_of_quarter==3)
+    {
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                image[i][j]=arr3[i/2][j/2];
+            }
+        }
+
+    }
+    else if(number_of_quarter==4)
+    {
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                image[i][j]=arr4[i/2][j/2];
+            }
+        }
+
+    }
+}
+void Shufffel_Image() { // Author: Nada Mohamed Soliman
+    auto n=SIZE;
+    int arr1[n/2][n/2],arr2[n/2][n/2],arr3[n/2][n/2],arr4[n/2][n/2],number_of_quarter;
+    /*Here I will divide the image into four quarters
+    and copy the pixel values from the image*/
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            arr1[i][j]=image[i][j];
+            arr2[i][j]=image[i][j+(n/2)];
+            arr3[i][j]=image[i+(n/2)][j];
+            arr4[i][j]=image[i+(n/2)][j+(n/2)]; /*n/2=quarter_width=quarter_height*/
+        }
+    }
+    cout<<"Enter the order of the quarters that you want: ";
+    int quarter1,quarter2,quarter3,quarter4;
+    cin>>quarter1>>quarter2>>quarter3>>quarter4;
+/*Make the quarter1 of image as user want by copying the pixel in this
+quarter to the first quarter */
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            if(quarter1==1)
+                image[i][j]=arr1[i][j];
+            else if(quarter1==2)
+                image[i][j]=arr2[i][j];
+            else if(quarter1==3)
+                image[i][j]=arr3[i][j];
+            else if(quarter1==4)
+            {
+                image[i][j]=arr4[i][j];
+            }
+        }
+    }
+    /*Make the quarter2 of image as user want by copying the pixel in this
+  quarter to the second quarter which its column start from j+quarter_width
+   and n/2=quarter_width */
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            if(quarter2==1)
+                image[i][j+(n/2)]=arr1[i][j];
+            else if(quarter2==2)
+                image[i][j+(n/2)]=arr2[i][j];
+            else if(quarter2==3)
+                image[i][j+(n/2)]=arr3[i][j];
+            else if(quarter2==4)
+            {
+                image[i][j+(n/2)]=arr4[i][j];
+            }
+        }
+    }
+    /*Make the quarter3 of image as user want by copying the pixel in this
+ quarter to the third quarter which its row start from quarter_height+i and
+ I strat from zero to the size of quarter the user want to copy  */
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            if(quarter3==1)
+                image[i+(n/2)][j]=arr1[i][j];
+            else if(quarter3==2)
+                image[i+(n/2)][j]=arr2[i][j];
+            else if(quarter3==3)
+                image[i+(n/2)][j]=arr3[i][j];
+            else if(quarter3==4)
+            {
+                image[i+(n/2)][j]=arr4[i][j];
+            }
+        }
+    }
+    for (int i = 0; i <n/2; i++) {
+        for (int j = 0; j<n/2; j++) {
+            if(quarter4==1)
+                image[i+(n/2)][j+(n/2)]=arr1[i][j];
+            else if(quarter4==2)
+                image[i+(n/2)][j+(n/2)]=arr2[i][j];
+            else if(quarter4==3)
+                image[i+(n/2)][j+(n/2)]=arr3[i][j];
+            else if(quarter4==4)
+            {
+                image[i+(n/2)][j+(n/2)]=arr4[i][j];
+            }
+        }
     }
 }
