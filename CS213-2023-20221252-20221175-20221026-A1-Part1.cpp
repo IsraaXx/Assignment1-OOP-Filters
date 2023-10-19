@@ -325,7 +325,7 @@ void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 if ((i * 2) <= 255 && (j * 2) <= 255) {
-                    // it loops through the image array and checks if the indices i * 2 and j * 2 are within the bounds of the original image array.
+            // it loops through the image array and checks if the indices i * 2 and j * 2 are within the bounds of the original image array.
                     image1[i][j] = image[i * 2][j * 2];// this reduces the size of the image by a factor of 2 in both dimensions.
 
                 }
@@ -334,7 +334,7 @@ void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
         for (int i = 0; i < SIZE; ++i) {
             for (int j = 0; j < SIZE; ++j) {
                 image[i][j]=255;
-                image[i][j]=image1[i][j];
+                image[i][j]=image1[i][j]; //copy the shrinked image1 in the image to display it to user
             }
 
         }
@@ -356,7 +356,7 @@ void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
             for (int i = 0; i < SIZE; ++i) {
                 for (int j = 0; j < SIZE; ++j) {
                     image[i][j]=255;
-                    image[i][j]=image1[i][j];
+                    image[i][j]=image1[i][j]; //copy the shrinked image1 in the image to display it to user
                 }
 
             }
@@ -378,7 +378,7 @@ void Shrink_Image(string x){ // Author: Amany Mohamed Hussein
             for (int i = 0; i < SIZE; ++i) {
                 for (int j = 0; j < SIZE; ++j) {
                     image[i][j]=255;
-                    image[i][j]=image1[i][j];
+                    image[i][j]=image1[i][j]; //copy the shrinked image1 in the image to display it to user
                 }
             }
         }
@@ -595,7 +595,7 @@ for(int i=0;i<SIZE;i++){
      }
      for(int i=0;i<SIZE;i++){
          for(int j=0;j<SIZE;j++){
-             //copy pixel from shrink image to the image2 starting from j+step which step is the base of shrinked image and reduce it according to move
+    //copy pixel from shrink image to the image2 starting from j+step which step is the base of shrinked image and reduce it according to move
             image2[j+(int)step][i]=image[j][i];
          }
          step-=move;
